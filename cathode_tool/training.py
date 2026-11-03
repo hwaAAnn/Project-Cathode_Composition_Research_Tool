@@ -175,11 +175,11 @@ def train_all(
     out_dir = Path(out_dir or (ARTIFACT_DIR / ds.chemistry))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"[cathode_opt] === {ds.chemistry} training started (train={ds.n_train}, val={ds.n_val}) ===")
+    print(f"[cathode_tool] === {ds.chemistry} training started (train={ds.n_train}, val={ds.n_val}) ===")
 
     tuned: dict[str, dict[str, Any]] = {}
     if tune:
-        print("[cathode_opt] Tuning with Optuna...")
+        print("[cathode_tool] Tuning with Optuna...")
         t0 = time.time()
         tuned["catboost"] = tune_catboost(ds, n_trials)
         print(f"  · CatBoost best: {tuned['catboost']}")
@@ -189,7 +189,7 @@ def train_all(
         print(f"  · XGBoost  best: {tuned['xgboost']}")
         tuned["random_forest"] = tune_random_forest(ds, n_trials)
         print(f"  · RandomForest best: {tuned['random_forest']}")
-        print(f"[cathode_opt] Tuning done: {time.time() - t0:.1f}s")
+        print(f"[cathode_tool] Tuning done: {time.time() - t0:.1f}s")
 
     models_init: list[BaseRegressor] = [
         CatBoostModel(params=tuned.get("catboost")),
@@ -201,7 +201,7 @@ def train_all(
     results: list[TrainResult] = []
     trained: list[BaseRegressor] = []
     for m in models_init:
-        print(f"[cathode_opt] Training {m.name}...")
+        print(f"[cathode_tool] Training {m.name}...")
         m_fit, res = _fit_one(m, ds)
         results.append(res)
         trained.append(m_fit)
@@ -222,7 +222,7 @@ def train_all(
     ens_metrics = ensemble.evaluate(ds.X_val, ds.y_val)
     ensemble.save(out_dir / "ensemble")
     print(
-        f"[cathode_opt] ensemble({', '.join(top3_names)}) val RMSE={ens_metrics.rmse:.3f}  R²={ens_metrics.r2:.4f}"
+        f"[cathode_tool] ensemble({', '.join(top3_names)}) val RMSE={ens_metrics.rmse:.3f}  R²={ens_metrics.r2:.4f}"
     )
 
     metrics_dump = {
@@ -249,5 +249,5 @@ def train_all(
         json.dumps(metrics_dump, indent=2, ensure_ascii=False), encoding="utf-8"
     )
 
-    print(f"[cathode_opt] {ds.chemistry} done -> {out_dir}")
+    print(f"[cathode_tool] {ds.chemistry} done -> {out_dir}")
     return metrics_dump

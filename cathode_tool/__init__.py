@@ -1,4 +1,4 @@
-"""Cathode performance prediction and composition search toolkit.
+"""Research-support toolkit for cathode material performance prediction and composition exploration.
 
 Subpackages:
 - data       : data loading / cleaning

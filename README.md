@@ -1,13 +1,13 @@
-# Project-Cathode-Composition-Optimization
+# Project-Cathode-Composition-Dev-Tool
 
-Machine-learning pipeline for **performance prediction and composition search of lithium-ion battery cathode materials**. From 22 design variables known before cell fabrication, it predicts discharge capacity, searches for high-capacity material/process combinations with a genetic algorithm, and checks each candidate against measured data to flag out-of-distribution over-prediction.
+A research-support tool for **lithium-ion battery cathode materials**. From 22 design variables known before cell fabrication, it predicts discharge capacity, explores promising material/process combinations, and checks each candidate against measured data so that unreliable extrapolations can be spotted before running experiments.
 
 Developed as a university capstone design project (Systems Management Engineering).
 
 ## Approach
 
 1. **Prediction** – regression ensemble (CatBoost, LightGBM, XGBoost, Random Forest) for `discharge_capacity (mAh/g)`. The three models with the lowest validation RMSE are combined with inverse-RMSE weights.
-2. **Composition search** – a mixed-encoding genetic algorithm (real-valued and categorical genes) maximizes the predicted capacity. Variables can be fixed by the user; the search bounds of the remaining variables are derived from a capacity-percentile slice of the data.
+2. **Composition exploration** – a mixed-encoding genetic algorithm (real-valued and categorical genes) maximizes the predicted capacity. Variables can be fixed by the user; the search bounds of the remaining variables are derived from a capacity-percentile slice of the data.
 3. **Reliability check** – each candidate is compared with its K nearest measured samples (standardized numeric + one-hot categorical space, with distance thresholds calibrated on the dataset itself) and labeled *Strongly Recommended*, *Recommended* or *Hallucination*. This guards against the surrogate model overestimating designs far from the data it was trained on.
 
 Two chemistries are covered: **LFP** and **NCA**.
@@ -32,7 +32,7 @@ Per-model metrics and tuned hyperparameters are in `artifacts/<CHEM>/metrics.jso
 ## Repository layout
 
 ```
-cathode_opt/
+cathode_tool/
     config.py          # variable schema, paths, constants
     data.py            # loading and cleaning
     features.py        # per-model categorical encoding
@@ -67,7 +67,7 @@ pip install -r requirements.txt
 ```
 
 ```python
-from cathode_opt.pipeline import quick_optimize
+from cathode_tool.pipeline import quick_optimize
 
 # Search NCA compositions with the Ni fraction held fixed
 result = quick_optimize("NCA", fixed={"Ni_fraction": 0.8})
@@ -75,7 +75,7 @@ for sol in result["solutions"][:3]:
     print(sol["predicted_capacity"], sol["verdict"])
 ```
 
-Loading a pipeline requires the dataset CSVs above (used for search bounds and KNN reference data). Retraining is done through `cathode_opt.training`.
+Loading a pipeline requires the dataset CSVs above (used for search bounds and KNN reference data). Retraining is done through `cathode_tool.training`.
 
 ## Notes
 
