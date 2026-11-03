@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.vscode/
+.claude/
+
+# Source dataset (AI Hub) is not redistributed
+Training/*
+Validation/*
+!Training/.gitkeep
+!Validation/.gitkeep

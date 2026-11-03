@@ -1,0 +1,24 @@
+{
+  "names": [
+    {
+      "name": "lightgbm",
+      "file": "member_00_lightgbm.pkl",
+      "class": "LightGBMModel"
+    },
+    {
+      "name": "xgboost",
+      "file": "member_01_xgboost.pkl",
+      "class": "XGBoostModel"
+    },
+    {
+      "name": "random_forest",
+      "file": "member_02_random_forest.pkl",
+      "class": "RandomForestModel"
+    }
+  ],
+  "weights": [
+    0.33335557743123506,
+    0.33333635905623743,
+    0.33330806351252745
+  ]
+}
